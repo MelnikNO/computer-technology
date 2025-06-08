@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Гороскоп на каждый день</title>
+    <style>
+    body {
+        font-family: algerian;
+        color: white;
+        background: url('https://i.pinimg.com/originals/83/e8/18/83e818426a84d822bbaf25c831b88098.jpg') no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+    }
+
+    .pixel-font {
+        font-family: algerian;
+        text-align: center;
+        color: #ffffff;
+        text-shadow: 2px 2px 4px #000000;
+        font-size: 8em;
+    }
+
+    .form-container {
+        width: 50%;
+        margin: 50px auto;
+        background-color: rgba(255, 255, 255, 0.8); /* Белый с прозрачностью */
+        padding: 20px;
+        border: 5px solid #00ffd5; /* Ярко-синий */
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        color: #333;
+    }
+
+    label, input, select, button {
+        display: block;
+        margin-bottom: 10px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    button {
+        background-color: #00ff08; /* Зеленый */
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    select {
+        padding: 12px 20px;
+        margin: 8px 0;
+        border: 2px solid #00008B;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    input[type=text] {
+        padding: 12px 20px;
+        margin: 8px 0;
+        border: 2px solid #00008B;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+h
+    button:hover {
+        background-color: #3e8e41;
+    }
+</style>
+
+</head>
+<body vlink="white" alink="purple">
+
+    <h1 class="pixel-font">Гороскоп на каждый день</h1>
+
+<div class="form-container">
+    <form method="post">
+        <label for="username">Ваше имя:</label>
+        <input type="text" id="username" name="username" value="{{ username }}" required>
+
+        <label for="zodiac_sign">Выберите знак зодиака ({{ today_date }}):</label>
+        <select id="zodiac_sign" name="zodiac_sign">
+            {% for sign, dates, value in zodiac_signs %}
+                 <option value="{{ value }}" {% if value == selected_sign %}selected{% endif %}>{{ sign }} ({{ dates }})</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Узнать свой гороскоп</button>
+    </form>
+    {% if username %}
+        <p>Привет, {{ username }}! Вы выбрали знак: {{ selected_sign }}. А теперь выбери дату ниже.</p>
+    {% endif %}
+</div>
+
+    <h1 align="center">Выберите дату</h1>
+<div class="date-selector">
+    <span class="arrow-button" id="prev-date">&#9664;</span>
+    <span class="date-display" id="current-date">30.03.2025</span> <!-- Пример начальной даты -->
+    <span class="arrow-button" id="next-date">&#9654;</span>
+</div>
+
+<input type="hidden" id='selected-date' name="selected_date"> <!-- Скрытое поле для отправки на сервер -->
+<button id="submit-button">Предсказание дня</button>
+<p id="error-message" class="error hidden"></p>
+
+<a href="#" id="continue-button" class="hidden">Твой гороскоп уже здесь!</a>
+
+<script>
+    // Начальная дата в формате 'YYYY-MM-DD'
+    let currentDate = new Date('2025-03-30');
+
+    // Функция для форматирования даты в 'DD.MM.YYYY'
+    function formatDate(date) {
+        let day = String(date.getDate()).padStart(2, '0');
+        let month = String(date.getMonth() + 1).padStart(2, '0'); // Месяцы начинаются с 0
+        let year = date.getFullYear();
+        return `${day}.${month}.${year}`;
+    }
+
+    // Обновление отображаемой даты
+    function updateDateDisplay() {
+        document.getElementById('current-date').innerText = formatDate(currentDate);
+        document.getElementById('selected-date').value = formatDate(currentDate); // Устанавливаем значение в скрытое поле
+    }
+
+    // Обработчик для кнопки "вперед"
+    document.getElementById('next-date').onclick = function() {
+        currentDate.setDate(currentDate.getDate() + 1); // Увеличиваем дату на 1 день
+        updateDateDisplay();
+    };
+
+    // Обработчик для кнопки "назад"
+    document.getElementById('prev-date').onclick = function() {
+        currentDate.setDate(currentDate.getDate() - 1); // Уменьшаем дату на 1 день
+        updateDateDisplay();
+    };
+
+    // Обработчик для кнопки "Предсказание дня"
+    document.getElementById('submit-button').onclick = function() {
+        // Получаем выбранную дату
+        var dateDisplay = document.getElementById('current-date').innerText;
+
+        // Проверка на выбранную дату
+        if (dateDisplay) {
+            // Показываем ссылку
+            var continueButton = document.getElementById('continue-button');
+            continueButton.href = 'next_page.html'; // Укажите путь к следующей странице
+            continueButton.classList.remove('hidden'); // Показываем кнопку
+            document.getElementById('error-message').classList.add('hidden'); // Скрываем сообщение об ошибке
+        } else {
+            // Отображаем сообщение об ошибке, если дата не выбрана
+            var errorMessage = document.getElementById('error-message');
+            errorMessage.innerText = 'Пожалуйста, выберите дату.';
+            errorMessage.classList.remove('hidden');
+        }
+    };
+
+    // Инициализация отображаемой даты при загрузке страницы
+    updateDateDisplay();
+</script>
+
+<style>
+    .hidden {
+        display: none;
+    }
+
+    .error {
+        color: red;
+    }
+</style>
+
+    <script>
+        // Обработчик для кнопки "Предсказание дня"
+        document.getElementById('submit-button').onclick = function() {
+            // Получаем выбранную дату (можно дополнить логику выбора даты)
+            var dateDisplay = document.getElementById('current-date').innerText;
+            document.getElementById('selected-date').value = dateDisplay; // Устанавливаем значение в скрытое поле
+
+            // Проверка на выбранную дату (дополните по вашему усмотрению)
+            if (dateDisplay) {
+                // Показываем ссылку
+                var continueButton = document.getElementById('continue-button');
+                continueButton.href = 'next_page.html'; // Укажите путь к следующей странице
+                continueButton.classList.remove('hidden');
+            } else {
+                // Отображаем сообщение об ошибке, если дата не выбрана
+                var errorMessage = document.getElementById('error-message');
+                errorMessage.innerText = 'Пожалуйста, выберите дату.';
+                errorMessage.classList.remove('hidden');
+            }
+        };
+
+        // Здесь добавьте логику для навигации между датами, например, с помощью кнопок "вперед" и "назад"
+    </script>
+</body>
+
+
+    <div>
+        <input type="hidden" id="selected-date" />
+    </div>
+
+
+
+    <script>
+        function formatDate(date) {
+            // Форматирует дату в строку YYYY-MM-DD
+            let year = date.getFullYear();
+            let month = String(date.getMonth() + 1).padStart(2, '0'); // Добавляем ведущий ноль
+            let day = String(date.getDate()).padStart(2, '0'); // Добавляем ведущий ноль
+            return `${year}-${month}-${day}`;
+        }
+
+        function updateDateDisplay() {
+            // Обновляет отображение даты на странице
+            document.getElementById('current-date').innerText = formatDate(currentDate);
+            document.getElementById('selected-date').value = formatDate(currentDate); // Обновляем скрытое поле
+        }
+
+        function changeDate(days) {
+            // Изменяет дату на указанное количество дней
+            currentDate.setDate(currentDate.getDate() + days);
+            updateDateDisplay();
+        }
+
+        let currentDate = new Date(); // Текущая дата
+        currentDate.setDate(currentDate.getDate() - 1); // Устанавливаем вчерашнюю дату
+        updateDateDisplay(); // Обновляем отображение даты
+
+        // Обработчики нажатий на кнопки
+        document.getElementById('prev-date').addEventListener('click', function() {
+            changeDate(-1); // Уменьшаем дату на 1 день
+        });
+
+        document.getElementById('next-date').addEventListener('click', function() {
+            changeDate(1); // Увеличиваем дату на 1 день
+        });
+
+        document.getElementById('submit-button').addEventListener('click', function(event) {
+            event.preventDefault(); // Предотвращаем стандартное действие кнопки
+
+            const name = document.getElementById('name').value;
+            const sign = document.getElementById('sign').value;
+            const selectedDate = document.getElementById('selected-date').value;
+
+            if (name && sign && selectedDate) {
+                const url = `/horoscope/${sign}?name=${name}&date=${selectedDate}`;
+                const continueButton = document.getElementById('continue-button');
+                continueButton.href = url;
+                continueButton.classList.remove('hidden');
+
+                continueButton.addEventListener('click', function(event) {
+                    window.location.href = url; // Перенаправляем пользователя на страницу гороскопа
+                });
+
+                document.getElementById('error-message').classList.add('hidden'); // Скрыть сообщение об ошибке
+            } else {
+                const errorMessage = document.getElementById('error-message');
+                errorMessage.textContent = 'Пожалуйста, заполните все поля!';
+                errorMessage.classList.remove('hidden'); // Показываем сообщение об ошибке
+            }
+        });
+    </script>
+</body>
+
+</body>
+</html>
