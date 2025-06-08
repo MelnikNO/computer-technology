@@ -8,4 +8,4 @@
 
 ## [Материал по хаакатону "IT Putple"](https://github.com/MelnikNO/computer-and-operating_system/tree/main/IT%20Purple)
 
-## [Материал по хакатону "БЕЗУМhack"]()
+## [Материал по хакатону "БЕЗУМhack"](https://github.com/MelnikNO/computer-and-operating_system/tree/main/БЕЗУМHack)
