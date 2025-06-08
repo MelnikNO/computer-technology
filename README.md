@@ -6,6 +6,6 @@
 
 ## [Сертификаы об участии](https://github.com/MelnikNO/computer-and-operating_system/tree/main/Сертификаты)
 
-## [Материал по хаакатону "IT Putple"]()
+## [Материал по хаакатону "IT Putple"](https://github.com/MelnikNO/computer-and-operating_system/tree/main/IT%20Purple)
 
 ## [Материал по хакатону "БЕЗУМhack"]()
